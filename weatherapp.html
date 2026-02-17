@@ -4,12 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
+    <style>
+        body{
+        padding:10%;
+        text-align: center;
+        background-color: #f3f3f3;
+        
+    }
+    #container{
+        border: 1px solid rgb(184, 181, 181);
+
+        border-radius:10px;
+        padding: 10px;
+        width: 30%;
+        height: 250px;
+        box-shadow: 0 0  6px 0 rgba(0,0,0,0.4);
+        background-color: #b9afed;
+    }
+    input{
+        border-radius: 3px;
+    }
+    button{
+        border-radius: 3px;
+    }
+      </style>
 </head>
 <body>
+    <center>
+    <div id="container">
     <h1>weather app</h1>
     <input type="text" placeholder="Enter city name" id="cityInput">
     <button id="searchBtn">Search</button>
     <div id="weatherResult"></div>
+    </div>
+    </center>
 </body>
 <script>
     const cityInput=document.querySelector("#cityInput");
@@ -94,4 +122,5 @@
 
 
 </script>
+
 </html>
