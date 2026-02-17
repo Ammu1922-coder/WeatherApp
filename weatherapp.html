@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+</head>
+<body>
+    <h1>weather app</h1>
+    <input type="text" placeholder="Enter city name" id="cityInput">
+    <button id="searchBtn">Search</button>
+    <div id="weatherResult"></div>
+</body>
+<script>
+    const cityInput=document.querySelector("#cityInput");
+    const searchBtn=document.querySelector("#searchBtn");
+    const result=document.querySelector("#weatherResult");
+
+
+    searchBtn.addEventListener("click", () => {
+              const city=cityInput.value.trim();
+
+              if (city===""){
+                alert("Please enter a city name");
+                return;
+              }
+
+              result.textContent="loading....";
+              getweather(city);
+
+    });
+
+
+    async function getweather(city) {
+        try{
+            //to get latitudes and langitudes
+            const geoResponce= await fetch( `https://geocoding-api.open-meteo.com/v1/search?name=${city}`);
+            
+            if(!geoResponce.ok){
+                throw new error("Location not found");
+            }
+
+            const geoData= await geoResponce.json();
+
+            if(!geoData.results || geoData.results.length===0){
+                result.textContent="city not found";
+                return
+            }
+          // finding  name and country from lang and lat
+          const {latitude, longitude, name, country }= geoData.results[0];
+           
+         // Fetch weather using lat & lon
+         const weatherResponse=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+         const weatherdata=await weatherResponse.json();
+         console.log(weatherdata);
+          const weatherCode=weatherdata.current_weather.weathercode;
+          console.log("Weather code:", weatherCode);
+         const temp=weatherdata.current_weather.temperature;
+         const condition=getweatherText(weatherCode);
+
+         result.innerHTML =`
+         <h3>${name}, ${country}</h3>
+         <p>Temperature: ${temp}°C</p>
+         <p>Condition: ${condition}</p>`;
+        }
+        catch(error){
+            result.textContent="Error catching weather";
+            console.error(error);
+
+        }
+        
+    };
+
+    function getweatherText(code) {
+    if (code === 0) return "Clear sky ☀️";
+
+    if (code === 1 || code === 2 || code === 3)
+        return "Partly cloudy ☁️";
+
+    if (code >= 45 && code <= 48)
+        return "Fog 🌫️";
+
+    if (code >= 51 && code <= 67)
+        return "Rain 🌧️";
+
+    if (code >= 71 && code <= 77)
+        return "Snow ❄️";
+
+    if (code >= 95 && code <= 99)
+        return "Thunderstorm ⛈️";
+
+    return "Unknown weather";
+}
+
+
+</script>
+</html>
